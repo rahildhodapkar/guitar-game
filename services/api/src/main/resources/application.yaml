@@ -1,3 +1,6 @@
 spring:
   application:
     name: guitar-game
+  threads:
+    virtual:
+      enabled: true
