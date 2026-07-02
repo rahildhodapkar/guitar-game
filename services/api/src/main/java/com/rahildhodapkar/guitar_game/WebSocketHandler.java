@@ -10,6 +10,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
 public class WebSocketHandler extends TextWebSocketHandler {
     private static final Logger log = LoggerFactory.getLogger(WebSocketHandler.class);
     private static Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
@@ -28,6 +31,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        session.sendMessage(new TextMessage(message.getPayload()));
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(message.getPayload());
+        String incoming = root.get("message").asString();
+        log.info("Message received from client: " + incoming);
+        String outgoing = incoming.equals("ping") ? "pong" : incoming;
+        log.info("Message sending to client: " + outgoing);
+        session.sendMessage(new TextMessage(mapper.writeValueAsString(outgoing)));
     }
 }
