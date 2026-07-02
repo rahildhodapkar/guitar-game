@@ -5,6 +5,38 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>web</title>
+    <script defer>
+      const socket = new WebSocket("ws://localhost:8080/ws");
+
+      socket.onopen = (event) => {
+        console.log("WebSocket connection established");
+        sendMessage({
+          sender: "Client",
+          message: "Hello world",
+        });
+      };
+
+      socket.onmessage = (event) => {
+        const messageData = JSON.parse(event.data);
+        console.log("Message received: ", messageData);
+      };
+
+      socket.onerror = (error) => {
+        console.error("Error received: ", error);
+      };
+
+      const sendMessage = (message) => {
+        if (socket.readyState == socket.OPEN) {
+          socket.send(JSON.stringify(message));
+        } else {
+          console.error("WebSocket connection is not ready");
+        }
+      };
+
+      window.addEventListener("beforeunload", () => {
+        socket.close();
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
