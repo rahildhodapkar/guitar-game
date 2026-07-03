@@ -16,7 +16,7 @@ function App() {
       console.error("Error received: ", error);
     };
 
-    const sendMessage = (message: String) => {
+    const sendMessage = (message: string) => {
       if (socket.readyState == socket.OPEN) {
         socket.send(JSON.stringify({ message: message }));
       } else {
