@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+          cache-dependency-path: services/api/pom.xml
+      - name: Build and test with Maven
+        working-directory: services/api
+        run: ./mvnw -B verify
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install dependencies
+        working-directory: apps/web
+        run: pnpm install --frozen-lockfile
+      - name: Type-check
+        working-directory: apps/web
+        run: pnpm exec tsc -b --noEmit
+      - name: Lint
+        working-directory: apps/web
+        run: pnpm lint
