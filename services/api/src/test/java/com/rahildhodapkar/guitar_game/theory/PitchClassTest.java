@@ -28,7 +28,12 @@ class PitchClassTest {
             "A, 9",
             "A#, 10",
             "Bb, 10",
-            "B, 11"
+            "B, 11",
+            // 'edge' cases
+            "B#, 0",
+            "Cb, 11",
+            "E#, 5",
+            "Fb, 4"
     })
     void testFromName(String name, int expected) {
         PitchClass pc = PitchClass.fromName(name);

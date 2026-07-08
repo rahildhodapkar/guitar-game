@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record PitchClass(int value) {
+    public static final int PITCH_CLASS_COUNT = 12;
+
     private static final int MIN = 0;
     private static final int MAX = 11;
 
@@ -23,6 +25,8 @@ public record PitchClass(int value) {
     }
 
     public static PitchClass fromName(String name) {
+        name = sanitizeString(name);
+
         Integer val = NAME_TO_VALUE.get(name);
 
         if (val == null) {
@@ -37,6 +41,14 @@ public record PitchClass(int value) {
         return names[value];
     }
 
+    public int intervalTo(PitchClass other) {
+        return Math.floorMod(other.value - this.value, PITCH_CLASS_COUNT);
+    }
+
+    public PitchClass transpose(int semitones) {
+        return new PitchClass(Math.floorMod(this.value + semitones, PITCH_CLASS_COUNT));
+    }
+
     private static Map<String, Integer> buildNameMap() {
         Map<String, Integer> nameMap = new HashMap<>();
 
@@ -45,6 +57,18 @@ public record PitchClass(int value) {
             nameMap.put(FLAT_NAMES[i], i);
         }
 
+        // Rare enharmonics
+        nameMap.put("B#", 0);
+        nameMap.put("Cb", 11);
+        nameMap.put("E#", 5);
+        nameMap.put("Fb", 4);
+
         return nameMap;
+    }
+
+    private static String sanitizeString(String str) {
+        str = str.trim();
+        str = str.substring(0, 1).toUpperCase() + str.substring(1);
+        return str;
     }
 }
