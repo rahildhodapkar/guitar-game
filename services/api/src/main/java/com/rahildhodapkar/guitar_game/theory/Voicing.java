@@ -4,10 +4,14 @@ public record Voicing(String chord, int[] frets, int[] fingers, int baseFret) {
   @Override
   public String toString() {
     return "Voicing:\n"
-        + "\tChord name: " + chord + "\n"
+        + "\tChord name: "
+        + chord
+        + "\n"
         + createStringFromIntArray("\tFrets", frets)
         + createStringFromIntArray("\tFingers", fingers)
-        + "\tBase fret: " + String.valueOf(baseFret) + "\n";
+        + "\tBase fret: "
+        + String.valueOf(baseFret)
+        + "\n";
   }
 
   private String createStringFromIntArray(String label, int[] arr) {

@@ -112,11 +112,14 @@ class ChordDetectorTest {
     }
 
     @Test
-    void twoNoteInputNeverMatchesAnyQuality() {
+    void twoNotePowerChordIsDetectedAsPower5() {
         List<PlayedNote> source = List.of(note("C", 60), note("G", 67));
 
-        assertTrue(detector.detect(source, NO_ASSUMPTIONS).isEmpty());
-        assertTrue(detector.detect(source, ASSUME_PERFECT_FIFTH).isEmpty());
+        List<DetectedChord> detected = detector.detect(source, NO_ASSUMPTIONS);
+
+        assertEquals(1, detected.size());
+        assertEquals(ChordQuality.POWER5, detected.get(0).quality());
+        assertEquals("C5", detected.get(0).name());
     }
 
     @Test
@@ -155,7 +158,13 @@ class ChordDetectorTest {
     void assumedPerfectFifthIsSuppressedWhenAnAlteredFifthIsAlreadyPresent() {
         List<PlayedNote> source = List.of(note("C", 60), note("E", 64), note("Gb", 66), note("Bb", 70));
 
-        assertTrue(detector.detect(source, ASSUME_PERFECT_FIFTH).isEmpty());
+        List<DetectedChord> detected = detector.detect(source, ASSUME_PERFECT_FIFTH);
+
+        assertTrue(!detected.isEmpty());
+        for (DetectedChord chord : detected) {
+            assertEquals(ChordQuality.DOM7_FLAT5, chord.quality());
+        }
+        assertEquals("C7b5", detected.get(0).name());
     }
 
     @Test
@@ -311,9 +320,15 @@ class ChordDetectorTest {
 
         List<DetectedChord> detected = detector.detect(source, NO_ASSUMPTIONS);
 
-        assertEquals(1, detected.size());
-        assertEquals(ChordQuality.DOM11, detected.get(0).quality());
-        assertEquals("C11", detected.get(0).name());
+        assertEquals(2, detected.size());
+        Set<String> names = detected.stream().map(DetectedChord::name).collect(Collectors.toSet());
+        assertEquals(Set.of("C11", "Bb69/C"), names);
+
+        DetectedChord cEleven = detected.stream()
+                .filter(c -> c.quality() == ChordQuality.DOM11).findFirst().orElseThrow();
+        DetectedChord bbSixtyNine = detected.stream()
+                .filter(c -> c.quality() == ChordQuality.MAJ6ADD9).findFirst().orElseThrow();
+        assertTrue(cEleven.weight() > bbSixtyNine.weight());
     }
 
     private static double weightOf(List<DetectedChord> detected, ChordQuality quality) {
