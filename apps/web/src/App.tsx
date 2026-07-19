@@ -1,3 +1,5 @@
+import AudioRecorder from "./AudioRecorder/AudioRecorder";
+
 function App() {
   const sendPing = (): void => {
     const socket = new WebSocket("/ws");
@@ -33,6 +35,8 @@ function App() {
     <>
       <span>Click here to test WS: </span>
       <button onClick={sendPing}>Click me!</button>
+
+      <AudioRecorder />
     </>
   );
 }
