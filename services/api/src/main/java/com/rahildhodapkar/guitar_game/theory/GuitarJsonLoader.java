@@ -3,8 +3,10 @@ package com.rahildhodapkar.guitar_game.theory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -68,7 +70,7 @@ public class GuitarJsonLoader {
     this.mapper = JsonMapper.builder().build();
   }
 
-  public List<Voicing> loadVoicings() throws IOException {
+  public Map<String, List<Voicing>> loadVoicings() throws IOException {
     try (InputStream inputStream = getClass().getResourceAsStream("/guitar.json"); ) {
       if (inputStream == null) {
         throw new IllegalStateException("guitar.json not found");
@@ -80,22 +82,30 @@ public class GuitarJsonLoader {
 
       JsonNode allChords = root.get("chords");
 
-      List<Voicing> voicings = new ArrayList<>();
+      Map<String, List<Voicing>> voicings = new HashMap<>();
 
       for (String key : keys) {
         key = key.replace("#", "sharp");
         JsonNode chord = allChords.get(key);
         for (JsonNode chordVariant : chord) {
           String chordKey = chordVariant.get("key").asString();
-          String suffix =
-              JSON_SUFFIX_TO_QUALITY_SYMBOL.getOrDefault(chordVariant.get("suffix").asString(), "");
+          String jsonSuffix = chordVariant.get("suffix").asString();
+          String suffix = JSON_SUFFIX_TO_QUALITY_SYMBOL.get(chordVariant.get("suffix").asString());
+
+          if (suffix == null) {
+            System.out.println("Skipping unsupported guitar chord suffix: " + jsonSuffix);
+            continue;
+          }
+
           JsonNode positions = chordVariant.get("positions");
           for (JsonNode position : positions) {
             int[] frets = mapper.treeToValue(position.get("frets"), int[].class);
             int[] fingers = mapper.treeToValue(position.get("fingers"), int[].class);
             int baseFret = position.get("baseFret").asInt();
 
-            voicings.add(new Voicing(chordKey + suffix, frets, fingers, baseFret));
+            voicings
+                .computeIfAbsent(chordKey + suffix, _ -> new ArrayList<>())
+                .add(new Voicing(chordKey + suffix, frets, fingers, baseFret));
           }
         }
       }
@@ -107,8 +117,9 @@ public class GuitarJsonLoader {
   public static void main(String args[]) {
     GuitarJsonLoader loader = new GuitarJsonLoader();
     try {
-      List<Voicing> voicings = loader.loadVoicings();
-      for (Voicing voicing : voicings) {
+      Map<String, List<Voicing>> voicings = loader.loadVoicings();
+      for (Voicing voicing :
+          voicings.values().stream().flatMap(List::stream).collect(Collectors.toList())) {
         System.out.println(voicing.toString());
       }
     } catch (IOException e) {

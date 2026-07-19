@@ -28,6 +28,10 @@ public final class ChordDetector {
       return List.of();
     }
 
+    if (options == null) {
+      options = new ChordDetectOptions(false, false);
+    }
+
     Map<Integer, Integer> noteFrequency = new HashMap<>();
 
     for (PlayedNote note : source) {

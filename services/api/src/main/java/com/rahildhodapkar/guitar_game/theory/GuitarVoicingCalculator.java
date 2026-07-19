@@ -26,14 +26,12 @@ public final class GuitarVoicingCalculator {
         throw new IllegalArgumentException("Fret cannot be less than -1");
       }
 
-      int midiNumber = tuning.openStrings().get(string).midiNumber();
-
       PitchClass pc =
           tuning
               .openStrings()
               .get(string)
               .pitchClass()
-              .transpose((midiNumber + fret) % PitchClass.PITCH_CLASS_COUNT);
+              .transpose(fret);
 
       pitchClasses.add(pc);
     }
