@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "pitchClassOrder": [
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B"
+  ],
+  "chords": [
+    {
+      "id": "C",
+      "displayName": "C major",
+      "pitchClasses": [0, 4, 7],
+      "requiredPitchClasses": [0, 4],
+      "optionalPitchClasses": [7],
+      "diagram": [-1, 3, 2, 0, 1, 0]
+    },
+    {
+      "id": "A",
+      "displayName": "A major",
+      "pitchClasses": [9, 1, 4],
+      "requiredPitchClasses": [9, 1],
+      "optionalPitchClasses": [4],
+      "diagram": [-1, 0, 2, 2, 2, 0]
+    },
+    {
+      "id": "G",
+      "displayName": "G major",
+      "pitchClasses": [7, 11, 2],
+      "requiredPitchClasses": [7, 11],
+      "optionalPitchClasses": [2],
+      "diagram": [3, 2, 0, 0, 0, 3]
+    },
+    {
+      "id": "E",
+      "displayName": "E major",
+      "pitchClasses": [4, 8, 11],
+      "requiredPitchClasses": [4, 8],
+      "optionalPitchClasses": [11],
+      "diagram": [0, 2, 2, 1, 0, 0]
+    },
+    {
+      "id": "D",
+      "displayName": "D major",
+      "pitchClasses": [2, 6, 9],
+      "requiredPitchClasses": [2, 6],
+      "optionalPitchClasses": [9],
+      "diagram": [-1, -1, 0, 2, 3, 2]
+    },
+    {
+      "id": "Am",
+      "displayName": "A minor",
+      "pitchClasses": [9, 0, 4],
+      "requiredPitchClasses": [9, 0],
+      "optionalPitchClasses": [4],
+      "diagram": [-1, 0, 2, 2, 1, 0]
+    },
+    {
+      "id": "Em",
+      "displayName": "E minor",
+      "pitchClasses": [4, 7, 11],
+      "requiredPitchClasses": [4, 7],
+      "optionalPitchClasses": [11],
+      "diagram": [0, 2, 2, 0, 0, 0]
+    },
+    {
+      "id": "Dm",
+      "displayName": "D minor",
+      "pitchClasses": [2, 5, 9],
+      "requiredPitchClasses": [2, 5],
+      "optionalPitchClasses": [9],
+      "diagram": [-1, -1, 0, 2, 3, 1]
+    }
+  ],
+  "packs": [
+    {
+      "id": "open-basic",
+      "displayName": "Open Major and Minor Chords",
+      "chordIds": ["C", "A", "G", "E", "D", "Am", "Em", "Dm"]
+    }
+  ]
+}
